@@ -1,0 +1,119 @@
+﻿<Window x:Class="CryptoCurrencies.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cryptoCurrencies="clr-namespace:CryptoCurrencies"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" 
+        Width="1300" Height="800"
+        d:DesignHeight="800" d:DesignWidth="1000"
+        Background="White"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    
+    <Window.Resources>
+        <cryptoCurrencies:ToUpper x:Key="ToUpper" />
+        <cryptoCurrencies:PercentageToText x:Key="PercentageToText" />
+        <cryptoCurrencies:PercentageToBrush x:Key="PercentageToBrush" />
+        <cryptoCurrencies:DecimalToVariableCurrency x:Key="DecimalToVariableCurrency" />
+    </Window.Resources>
+
+    <Grid Background="#FFFFFF">
+        <ScrollViewer Background="Transparent" Margin="0 2 0 0" x:Name="Scroller" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Margin="0 10 0 0" Background="Transparent" HorizontalAlignment="Center">
+                <Grid Panel.ZIndex="100">
+                    <StackPanel>
+                        <Image Margin="10 0 0 30"
+                               HorizontalAlignment="Left"
+                               Width="180"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               Source="/Resources/logo.png"/>
+                        
+                        <TextBlock Margin="10 0 0 0"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"
+                                   Foreground="#000000">
+                            Today's Crypto Prices by Market Cap
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Margin="0 40 0 0" Panel.ZIndex="0">
+                    <StackPanel Orientation="Horizontal" Margin="20 0 20 0">
+                        <Button Margin="0 0 15 0">#</Button>
+                        <Button Margin="25 0 200 0">Name</Button>
+                        <Button Command="{Binding Sort}" CommandParameter="CurrentPrice" Margin="40 0 0 0">Price</Button>
+                        <Button Margin="50 0 0 0">24h %</Button>
+                    </StackPanel>
+                    <Separator Margin="0" 
+                               Background="#2f2f2f"/>
+                    <ItemsControl ItemsSource="{Binding Coins}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Tag="{Binding Id}" MouseUp="SelectCoin" Cursor="Hand">
+                                    <StackPanel.Style>
+                                        <Style TargetType="{x:Type StackPanel}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Trigger.Setters>
+                                                        <Setter Property="Background"
+                                                                Value="#F8FAFD"/>
+                                                    </Trigger.Setters>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Grid Background="Transparent" Height="75" Margin="20 0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock FontWeight="Medium"
+                                                       VerticalAlignment="Center"
+                                                       Width="35"
+                                                       Text="{Binding MarketCapRank}" 
+                                                       Foreground="#58667E"/>
+                                            <WrapPanel Width="200" Margin="8 0 0 0" VerticalAlignment="Center">
+                                                <Image RenderOptions.BitmapScalingMode="HighQuality" Height="24" Width="24" Source="{Binding Image}"/>
+                                                <TextBlock Margin="6 0 6 1" 
+                                                           VerticalAlignment="Center" 
+                                                           FontSize="13.5" 
+                                                           FontWeight="SemiBold"
+                                                           Text="{Binding Name}" 
+                                                           Foreground="#000000"/>
+                                                <TextBlock
+                                                    Margin="0 0 0 0.25"
+                                                    FontSize="13.5"
+                                                    FontWeight="SemiBold"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="#808A9D"
+                                                    Text="{Binding Symbol, Converter={StaticResource ToUpper}}" />
+                                            </WrapPanel>
+                                            <Grid Width="90">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Right"
+                                                    FontSize="13.25"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding CurrentPrice, Converter={StaticResource DecimalToVariableCurrency}}"
+                                                    Foreground="#000000"/>
+                                            </Grid>
+                                            <Grid Width="85">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Right"
+                                                    FontSize="13.5"
+                                                    FontWeight="SemiBold"
+                                                    Text="{Binding PriceChangePercentage24HInCurrency, Converter={StaticResource PercentageToText}}"
+                                                    Foreground="{Binding PriceChangePercentage24HInCurrency, Converter={StaticResource PercentageToBrush}}" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Separator Margin="0" Background="#eff2f5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
